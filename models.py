@@ -8,6 +8,8 @@ class Book(db.Model):
     title = db.Column(db.String, nullable=False)
     author = db.Column(db.String, nullable=False)
     year = db.Column(db.String, nullable=False)
+    review_count = db.Column(db.Integer, nullable=True)
+    average_score = db.Column(db.Integer, nullable=True)
 
 
 class Usuario(db.Model):    
