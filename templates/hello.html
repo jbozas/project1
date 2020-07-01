@@ -1,12 +1,9 @@
 {% extends "layout.html" %}
 
-{% block title %}
-    JayBooks
-{% endblock %}S
+{% block heading %}
+    Hello!
+{% endblock %}
 
 {% block body %}
-<form action="" method="post">
-    <input type="text" name="name" placeholder="Enter Your Name">
-    <button>Submit</button>
-<form>
+    Hello, {{ name }}!
 {% endblock %}

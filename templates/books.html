@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+
+{% block title %}
+JayBooks
+{% endblock %}
+
+{% block body %}
+    <p>By ISBN</p>
+        {% if book_isbn%}
+            <h1>{{ book_isbn.title }}</h1>
+        {% else %}
+            <h1>No results.</h1>
+        {% endif %}
+
+    <p>By Author</p>
+    {% if books_author %}
+        {% for book in books_author %}
+            <li>{{ book.title }}</li>
+        {% endfor %}
+    {% else %}
+        <h1>No results.</h1>
+    {% endif %}
+
+    <p>By Title</p>
+    {% if books_title %}
+        {% for book in books_title %}
+            <li>{{ book.title }}</li>
+        {% endfor %}
+    {% else %}
+        <h1>No results.</h1>
+    {% endif %}
+{% endblock %}

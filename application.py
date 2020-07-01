@@ -7,7 +7,9 @@ from flask_session import Session
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
+
 from request import exists
+from models import Book
 
 app = Flask(__name__)
 
@@ -24,24 +26,21 @@ db.init_app(app)
 def index():
     return render_template("startPage.html")
 
+@app.route('/book', methods=["POST"])
+def book():
+    value = request.form.get("book")
+
+    #Get results
+    book_isbn = Book.query.get(value)
+    books_author = Book.query.filter(Book.author.like(f"%{value}%")).all()
+    books_title = Book.query.filter(Book.title.like(f"%{value}%")).all()
+
+    return render_template("books.html", book_isbn=book_isbn, books_author=books_author, books_title=books_title)
+
 """Return a JSON with the ISBN book info."""
 @app.route("/api/<string:isbn>")
 def api(isbn):
     return exists(isbn)
-    
-"""Import csv and google data to load it into the db"""
-@app.route("/import")
-def import_csv():
-    exec(open('import.py').read())
-
-@app.route("/hello", methods=["POST"])
-def hello():
-    name = request.form.get("name")
-    if name is None:
-       return render_template("hello.html")
-    else:
-        return f"Hello, {name}!"
-    return render_template("hello.html")
 
 def main():
       # Create tables based on each table definition in `models`
@@ -50,4 +49,4 @@ def main():
 if __name__ == "__main__":
     # Allows for command line interaction with Flask application
     with app.app_context():
-        main()
+        app.run(debug=True)
