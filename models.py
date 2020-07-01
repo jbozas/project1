@@ -8,11 +8,16 @@ class Book(db.Model):
     title = db.Column(db.String, nullable=False)
     author = db.Column(db.String, nullable=False)
     year = db.Column(db.String, nullable=False)
-    review_count = db.Column(db.Integer, nullable=True)
-    average_score = db.Column(db.Integer, nullable=True)
+    """
+    #review_count = db.Column(db.Integer, nullable=True)
+    #average_score = db.Column(db.Float, nullable=True)
 
+    def __addAtr__(self, avg_sc, rev_coun):
+        review_count = db.Column(db.Integer, nullable=True)
+        average_score = db.Column(db.Float, nullable=True)
+    """
 
-class Usuario(db.Model):    
+class Usuario(db.Model):
     __tablename__ = "usuario"
     id = db.Column(db.Integer, primary_key=True)
     usuario = db.Column(db.String, nullable=False)

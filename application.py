@@ -2,7 +2,7 @@ import os
 import requests
 
 
-from flask import Flask, session, render_template
+from flask import Flask, session, render_template, request
 from flask_session import Session
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine
@@ -22,7 +22,7 @@ db.init_app(app)
 
 @app.route("/")
 def index():
-    return "Project 1: TODO"
+    return render_template("startPage.html")
 
 """Return a JSON with the ISBN book info."""
 @app.route("/api/<string:isbn>")
@@ -33,6 +33,15 @@ def api(isbn):
 @app.route("/import")
 def import_csv():
     exec(open('import.py').read())
+
+@app.route("/hello", methods=["POST"])
+def hello():
+    name = request.form.get("name")
+    if name is None:
+       return render_template("hello.html")
+    else:
+        return f"Hello, {name}!"
+    return render_template("hello.html")
 
 def main():
       # Create tables based on each table definition in `models`

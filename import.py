@@ -5,6 +5,7 @@ from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy
 
 from models import Book
+from google import getGoogleData
 
 
 app = Flask(__name__)
@@ -14,16 +15,30 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy()
 db.init_app(app)
 
+# Read the file, create the array and make the request to google
+def readFile():
+    v = []
+    f = open("./storage/books.csv")
+    isbns = [] 
+    reader = csv.reader(f)
+    for isbn, title, author, year in reader:
+        book = Book(isbn=isbn, title=title, author=author, year=year)
+        v.append(book)
+        isbns.append(book.isbn)
+    
+
+
+
+
 def main():
     f = open("./storage/books.csv")
     reader = csv.reader(f)
+
     for isbn, title, author, year in reader:
         book = Book(isbn=isbn, title=title, author=author, year=year)
         db.session.add(book)
         print(f"Added book number {isbn} with title {title} .")
-    print("There is no more books.")   
-
-
+    print("There is no more books.") 
     db.session.commit()
     print("Proccess successful.")
 

@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    JayBooks
+{% endblock %}S
+
+{% block body %}
+<div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script> 
+    <script> 
+    $(function(){
+      $("#includedContent").load("navbar.html"); 
+    });
+    </script> 
+</div>
+<div class="input-group mb-3">
+    <input type="text" class="form-control" placeholder="Type isbn, author or name of the book..." aria-label="Type isbn, author or name of the book..." aria-describedby="button-addon2">
+    <div class="input-group-append">
+      <button class="btn btn-outline-secondary" type="button" id="button-addon2">Search</button>
+    </div>
+  </div>
+{% endblock %}
