@@ -8,6 +8,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 
+from google import getGoogleData, getImage
 from request import exists
 from models import Book
 
@@ -26,6 +27,13 @@ db.init_app(app)
 def index():
     return render_template("startPage.html")
 
+@app.route("/books/<string:isbn>")
+def books(isbn):
+    book = Book.query.get(isbn)
+    av_rngs, rcount = getGoogleData(isbn=isbn)
+
+    return render_template("book.html", book=book, av_rngs=av_rngs, rcount=rcount)
+
 @app.route('/book', methods=["POST"])
 def book():
     value = request.form.get("book")
@@ -34,6 +42,8 @@ def book():
     book_isbn = Book.query.get(value)
     books_author = Book.query.filter(Book.author.like(f"%{value}%")).all()
     books_title = Book.query.filter(Book.title.like(f"%{value}%")).all()
+
+    print(f'By ISBN: {book_isbn} - by Author {books_author} - by Title {books_title}')
 
     return render_template("books.html", book_isbn=book_isbn, books_author=books_author, books_title=books_title)
 

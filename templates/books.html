@@ -8,6 +8,9 @@ JayBooks
     <p>By ISBN</p>
         {% if book_isbn%}
             <h1>{{ book_isbn.title }}</h1>
+            <a href="{{ url_for('books', isbn=book_isbn.isbn) }}">
+                {{ book_isbn.title }}
+            </a>
         {% else %}
             <h1>No results.</h1>
         {% endif %}
@@ -15,7 +18,7 @@ JayBooks
     <p>By Author</p>
     {% if books_author %}
         {% for book in books_author %}
-            <li>{{ book.title }}</li>
+            <a href="{{ url_for('books', isbn=book.isbn) }}"><li>{{ book.title }}</li></a>
         {% endfor %}
     {% else %}
         <h1>No results.</h1>
