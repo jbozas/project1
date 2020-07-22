@@ -17,6 +17,13 @@ class Book(db.Model):
         average_score = db.Column(db.Float, nullable=True)
     """
 
+class Review(db.Model):
+    __tablename__ = "reviews"
+    isbn = db.Column(db.String, primary_key=True)
+    usuario = db.Column(db.Integer, primary_key=True)
+    comments = db.Column(db.String, nullable=False)
+    stars = db.Column(db.String, nullable=False)
+
 class Usuario(db.Model):
     __tablename__ = "usuario"
     id = db.Column(db.Integer, primary_key=True)

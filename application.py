@@ -10,7 +10,7 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 
 from google import getGoogleData, getImage
 from request import exists
-from models import Book
+from models import Book, Review
 
 app = Flask(__name__)
 
@@ -32,7 +32,22 @@ def books(isbn):
     book = Book.query.get(isbn)
     av_rngs, rcount = getGoogleData(isbn=isbn)
 
-    return render_template("book.html", book=book, av_rngs=av_rngs, rcount=rcount)
+    comentarios = Review.query.filter_by(isbn=isbn).all()
+    print(comentarios)
+
+    return render_template("book.html", book=book, av_rngs=av_rngs, rcount=rcount, comentarios=comentarios)
+
+@app.route('/comment/<string:isbn>', methods=["POST"])
+def comment(isbn):
+    comment = request.form.get("comment")
+    review = Review(isbn=isbn, usuario=2, comments=comment, stars="3")
+    db.session.add(review)
+    db.session.commit()
+    #book = Book(isbn=isbn, title=title, author=author, year=year)
+    #db.session.add(book)
+    #db.session.commit()
+    return f"LLego{comment} with the book: {isbn}"
+
 
 @app.route('/book', methods=["POST"])
 def book():
