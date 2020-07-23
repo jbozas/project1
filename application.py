@@ -11,9 +11,9 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 from google import getGoogleData, getImage
 from request import exists
 from models import Book, Review, Usuario
-from logeo import no_authent
+from logeo import no_authent, get_session, create_user, verify_user, get_sessionUser
 
-global current_session
+
 app = Flask(__name__)
 
 
@@ -23,30 +23,58 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy()
 db.init_app(app)
-
+current_session=None
 
 @app.route("/")
 def index():
-    return render_template("login.html")
+    if current_session is not None:
+        return render_template("startPage.html", curr_sess=current_session)
+    else:
+        return render_template("user.html")
+
+@app.route("/logout")
+def logout():
+    global current_session
+    current_session=None
+    return index()
 
 @app.route("/login")
 def login():
-    #last_user = Usuario.query.all()
-    #user_id = last_user[.id
-    #print(user_id)
-    user = Usuario(usuario="testing", password="testing")
-    db.session.add(user)
-    db.session.commit()
-    return f"login{user}"
+    return render_template("login.html")
+
+@app.route("/user_log", methods=["POST"])
+def user_log():
+    global current_session
+    username = request.form.get("username")
+    password = request.form.get("password")
+    user = verify_user(username, password)
+    print(f"El resultado de la verificación: {user}")
+    if user:
+        current_session = get_sessionUser(username)
+    return index()
 
 @app.route("/register")
 def register():
-    return "register"
+    #if(username is not None and password is not None):
+     #  user_creation(username, password)
+    return render_template("register.html")
+
+@app.route("/user_creation", methods=["POST"])
+def user_creation():
+    global current_session
+    username = request.form.get("username")
+    password = request.form.get("password")
+    user = create_user(username, password)
+    current_session = user
+    return index()
 
 @app.route("/anonymus")
 def anonymus():
-    current_session = no_authent()
-    return f"Usuario id: {current_session}"
+    global current_session
+    user_id = no_authent()
+    current_session = get_session(user_id)
+
+    return render_template("startPage.html", curr_sess=current_session)
 
 @app.route("/books/<string:isbn>")
 def books(isbn):
@@ -54,20 +82,21 @@ def books(isbn):
     av_rngs, rcount = getGoogleData(isbn=isbn)
 
     comentarios = Review.query.filter_by(isbn=isbn).all()
-    print(comentarios)
 
-    return render_template("book.html", book=book, av_rngs=av_rngs, rcount=rcount, comentarios=comentarios)
+    allow_comment=True
+    user_comment = Review.query.get((isbn, current_session.id))
+    if(user_comment):
+        allow_comment=False
+
+    return render_template("book.html", book=book, av_rngs=av_rngs, rcount=rcount, comentarios=comentarios, curr_sess=current_session, allow_comment=allow_comment)
 
 @app.route('/comment/<string:isbn>', methods=["POST"])
 def comment(isbn):
     comment = request.form.get("comment")
-    review = Review(isbn=isbn, usuario=2, comments=comment, stars="3")
+    review = Review(isbn=isbn, usuario=current_session.id, comments=comment, stars="3")
     db.session.add(review)
     db.session.commit()
-    #book = Book(isbn=isbn, title=title, author=author, year=year)
-    #db.session.add(book)
-    #db.session.commit()
-    return f"LLego{comment} with the book: {isbn}"
+    return books(isbn)
 
 
 @app.route('/book', methods=["POST"])
@@ -79,9 +108,7 @@ def book():
     books_author = Book.query.filter(Book.author.like(f"%{value}%")).all()
     books_title = Book.query.filter(Book.title.like(f"%{value}%")).all()
 
-    print(f'By ISBN: {book_isbn} - by Author {books_author} - by Title {books_title}')
-
-    return render_template("books.html", book_isbn=book_isbn, books_author=books_author, books_title=books_title)
+    return render_template("books.html", book_isbn=book_isbn, books_author=books_author, books_title=books_title, curr_sess=current_session)
 
 """Return a JSON with the ISBN book info."""
 @app.route("/api/<string:isbn>")

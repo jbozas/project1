@@ -5,12 +5,12 @@
 {% endblock %}
 
 {% block body %}
-<form action="{{ url_for('user_log') }}" method="POST">
+<form action="{{ url_for('user_creation') }}" method="POST">
 <div class="input-group mb-3">
     <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="button-addon2" name="username">
     <input type="password" class="form-control" placeholder="Password" aria-label="Password" aria-describedby="button-addon2" name="password">
     <div class="input-group-append">
-      <button class="btn btn-outline-secondary" type="submit" value="Register" id="button-addon2">Login</button>
+      <button class="btn btn-outline-secondary" type="submit" value="Register" id="button-addon2">Register</button>
     </div>
   </div>
 </form>

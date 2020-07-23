@@ -17,7 +17,37 @@ db.init_app(app)
 
 
 def no_authent():
-    user = Usuario(usuario="anonimo", password="")
+    user = Usuario(usuario="Guest", password="")
     db.session.add(user)
     db.session.commit()
     return user.id
+
+def get_session(user_id):
+    return Usuario.query.get(user_id)
+
+def get_sessionUser(username):
+    return Usuario.query.filter_by(usuario=username).first()
+
+def already_exists(username):
+    usuario = Usuario.query.filter_by(usuario=username).first()
+    if usuario:
+        return True
+    return False
+
+def create_user(username, password):
+    if already_exists(username):
+        return None
+    user = Usuario(usuario=username, password=password)
+    db.session.add(user)
+    db.session.commit()
+    return user
+
+def verify_user(username, password):
+    usuario = Usuario.query.filter_by(usuario=username).first()
+    if usuario is None:
+        return False
+    if usuario.password != password:
+        return False
+    else:
+        return True
+

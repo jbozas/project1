@@ -15,7 +15,8 @@
     {% else %}
         <p>No google reviews.</p>
     {% endif %}
-    
+
+    {% if allow_comment %}
         <form action="{{ url_for('comment', isbn = book.isbn) }}" method="POST">
             <div class="input-group mb-3">
                 <input type="text" class="form-control" placeholder="Leave a comment" aria-describedby="button-addon2" name="comment">
@@ -24,6 +25,7 @@
                 </div>
             </div>
         </form>
+    {% endif %}
                         <div class="clearfix"></div>
                         <hr>
                         {% for comment in comentarios %}
@@ -35,13 +37,13 @@
                                 <div class="media-body">
                                     <span class="text-muted pull-right">
                                     </span>
-                                    <strong class="text-success">{{ comment.usuario}}</strong>
+                                    <strong class="text-success">{{ curr_sess.usuario}}</strong>
                                     <p>
                                         {{ comment.comments}}
                                     </p>
                                 </div>
                             </li>
-                            
+
                                 </div>
                             </li>
                         </ul>
@@ -49,7 +51,7 @@
                     </div>
                 </div>
             </div>
-    
+
         </div>
     </div>
 {% endblock %}

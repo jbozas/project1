@@ -29,4 +29,8 @@ JayBooks
         {% endfor %}
     {% else %}
     {% endif %}
+
+    {% if not books_title and not books_author and not book_isbn%}
+        <p>There is no results...</p>
+    {% endif %}
 {% endblock %}

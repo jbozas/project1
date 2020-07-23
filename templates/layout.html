@@ -4,7 +4,13 @@
     <!-- BreadCumb  -->
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb">
-        <li class="breadcrumb-item active" aria-current="page"><a href="/">JayBiBooks</a></li>
+        <li class="breadcrumb-item active" aria-current="page"><a href="/">JayBooks</a></li>
+        {% if curr_sess%}
+
+        <li class="breadcrumb-item active" aria-current="page" left=0>{{curr_sess.usuario}}</li>
+        <li class="breadcrumb-item active" aria-current="page" left=0><a href="/logout">Logout</a></li>
+        {% endif %}
+
       </ol>
     </nav>
   <title>{% block title %}JayBooks{% endblock %}</title>
