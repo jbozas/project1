@@ -10,8 +10,10 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 
 from google import getGoogleData, getImage
 from request import exists
-from models import Book, Review
+from models import Book, Review, Usuario
+from logeo import no_authent
 
+global current_session
 app = Flask(__name__)
 
 
@@ -25,7 +27,26 @@ db.init_app(app)
 
 @app.route("/")
 def index():
-    return render_template("startPage.html")
+    return render_template("login.html")
+
+@app.route("/login")
+def login():
+    #last_user = Usuario.query.all()
+    #user_id = last_user[.id
+    #print(user_id)
+    user = Usuario(usuario="testing", password="testing")
+    db.session.add(user)
+    db.session.commit()
+    return f"login{user}"
+
+@app.route("/register")
+def register():
+    return "register"
+
+@app.route("/anonymus")
+def anonymus():
+    current_session = no_authent()
+    return f"Usuario id: {current_session}"
 
 @app.route("/books/<string:isbn>")
 def books(isbn):
