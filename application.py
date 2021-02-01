@@ -27,6 +27,7 @@ current_session=None
 
 @app.route("/")
 def index():
+    print('Estoy testeando')
     if current_session is not None:
         return render_template("startPage.html", curr_sess=current_session)
     else:
